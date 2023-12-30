@@ -5,7 +5,7 @@ from flask import Flask
 
 print("Iniciando...")
 
-ser = serial.Serial('/dev/ttyUSB0', 57600, timeout=1.0)
+ser = serial.Serial('/dev/ttyACM0', 57600, timeout=1.0)
 time.sleep(3)
 
 print("Serial ok...")
@@ -63,6 +63,22 @@ def right():
 		return menu()
 	except:
 		return error_page()
+	
+@app.route("/yes")
+def yes():
+	try:
+		ser.write("y\n".encode())
+		return menu()
+	except:
+		return error_page()
+	
+@app.route("/no")
+def no():
+	try:
+		ser.write("n\n".encode())
+		return menu()
+	except:
+		return error_page()
 		
 def menu():
 	return """
@@ -111,13 +127,13 @@ def menu():
 			<tr>
 				<td></td>
 				<td><a class='btn btn-primary atbutton' href='/back'>B</a></td>
-				<td></td>
+				<td><a class='btn btn-primary atbutton' href='/yes'>Y</a></td>
 			</tr>
 			
 			<tr>
 				<td></td>
 				<td><a class='btn btn-primary atbutton' href='/bf'>BF</a></td>
-				<td></td>
+				<td><a class='btn btn-primary atbutton' href='/no'>N</a></td>
 			</tr>
 		
 		</table>
