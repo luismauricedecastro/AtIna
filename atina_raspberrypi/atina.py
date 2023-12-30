@@ -3,13 +3,24 @@ import time
 
 from flask import Flask
 
-print("Iniciando...")
+from jetson_inference import detectNet
+from jetson_utils import videoSource, videoOutput
 
+print("Iniciando serial...")
 ser = serial.Serial('/dev/ttyACM0', 57600, timeout=1.0)
 time.sleep(3)
-
 print("Serial ok...")
 
+print("Iniciando modelo AI...")
+net = detectNet("ssd-mobilenet-v2", threshold=0.5)
+
+print("Iniciando camara...")
+camera = videoSource("/dev/video0")
+
+print("Iniciando display...")
+display = videoOutput("display://0")
+
+print("Configurando flash...")
 app = Flask(__name__)
 
 @app.route("/")
@@ -174,11 +185,24 @@ def error_page():
 	</body>
 </html>
 	"""
-	
-print("Iniciando host...")
 
+print("Procesando detections...")
+while display.IsStreaming():
+    img = camera.Capture()
+
+    if img is None: # capture timeout
+        continue
+
+    detections = net.Detect(img)
+    
+    display.Render(img)
+    display.SetStatus("Object Detection | Network {:.0f} FPS".format(net.GetNetworkFPS()))
+
+'''
+print("Iniciando web server...")
 try:
 	app.run(host = "0.0.0.0")
 except KeyboardInterrupt:
 	print("Cerrando serial")
 	ser.close()
+'''
