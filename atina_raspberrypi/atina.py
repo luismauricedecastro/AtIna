@@ -203,7 +203,9 @@ while display.IsStreaming():
 		
 	for detection in detections:
 		if detection.ClassID == 1:
-			print("Persona!")
+			print("Persona==========================")
+			print(detection)
+			ser.write("Y\n".encode())
 		else:
 			print(detection)
 	
