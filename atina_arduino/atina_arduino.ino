@@ -6,13 +6,14 @@
 Servo tilt_servo; //12V
 Servo pan_servo; //5V
 
-int MAX = 90;
-int MIDDLE = 80;
-int MIN = 70;
+//Neck Servo Constants
+int PAN_MAX = 90;
+int PAN_MIDDLE = 80;
+int PAN_MIN = 70;
 
-int TILTE_UP = 130;
-int TILTE_INIT = 140;
-int TILTE_LOW = 150;
+int TILT_UP = 130;
+int TILT_INIT = 140;
+int TILT_LOW = 150;
 
 //NOTAS
 //Primero se debe conectar el Arduino al Pi
@@ -54,8 +55,8 @@ void setup()
   tilt_servo.attach(8);
   pan_servo.attach(9);
 
-  tilt_servo.write(TILTE_INIT);
-  pan_servo.write(MIDDLE);
+  tilt_servo.write(TILT_INIT);
+  pan_servo.write(PAN_MIDDLE);
     
   if (LIDAR_ENABLED)
   {
@@ -79,26 +80,8 @@ void setup()
   leer_lidar();
 }
 
-void yes_and_no() {
-
-  say_yes();
-
-  blink();
-  blink();
-  blink();
-
-  say_no();
-
-  blink();
-  blink();
-  blink();
-}
-
 void loop()
 {
-  yes_and_no();
-  return;
-  
   //PROCESAR MENSAJES DEL PUERTO SERIAL enviados por el Raspberry PI
   if (Serial.available())
   {
@@ -353,6 +336,21 @@ void blink() {
 //NECK SERVO
 ////////////////////////////////
 
+void yes_and_no() {
+
+  say_yes();
+
+  blink();
+  blink();
+  blink();
+
+  say_no();
+
+  blink();
+  blink();
+  blink();
+}
+
 void say_yes() {
   up_down();
   up_down();
@@ -369,12 +367,12 @@ void say_no(){
 void up_down() {
   int pos;
 
-  for (pos = TILTE_INIT; pos <= TILTE_LOW; pos += 1) {
+  for (pos = TILT_INIT; pos <= TILT_LOW; pos += 1) {
     tilt_servo.write(pos);
     delay(15); 
   }
 
-  for (pos = TILTE_LOW; pos >= TILTE_INIT; pos -= 1) { 
+  for (pos = TILT_LOW; pos >= TILT_INIT; pos -= 1) { 
     tilt_servo.write(pos);
     delay(15); 
   }
@@ -383,12 +381,12 @@ void up_down() {
 void left() {
   int pos;
 
-  for (pos = MIDDLE; pos <= MAX; pos += 1) {
+  for (pos = PAN_MIDDLE; pos <= PAN_MAX; pos += 1) {
     pan_servo.write(pos);
     delay(15); 
   }
   
-  for (pos = MAX; pos >= MIDDLE; pos -= 1) { 
+  for (pos = PAN_MAX; pos >= PAN_MIDDLE; pos -= 1) { 
     pan_servo.write(pos);
     delay(15); 
   }
@@ -397,12 +395,12 @@ void left() {
 void right() {
   int pos;
   
-  for (pos = MIDDLE; pos >= MIN; pos -= 1) {
+  for (pos = PAN_MIDDLE; pos >= PAN_MIN; pos -= 1) {
     pan_servo.write(pos);
     delay(15); 
   }
   
-  for (pos = MIN; pos <= MIDDLE; pos += 1) { 
+  for (pos = PAN_MIN; pos <= PAN_MIDDLE; pos += 1) { 
     pan_servo.write(pos);
     delay(15); 
   }
