@@ -188,14 +188,25 @@ def error_page():
 
 print("Procesando detections...")
 while display.IsStreaming():
+	# capture the next image
     img = camera.Capture()
 
     if img is None: # capture timeout
         continue
 
+	# detect objects in the image
     detections = net.Detect(img)
+
+    # print the detections
+    print("detected {:d} objects in image".format(len(detections)))
+
+    for detection in detections:
+        print(detection)
     
+	# render the image
     display.Render(img)
+
+	# update the title bar
     display.SetStatus("Object Detection | Network {:.0f} FPS".format(net.GetNetworkFPS()))
 
 '''
