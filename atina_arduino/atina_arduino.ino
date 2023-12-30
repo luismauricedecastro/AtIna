@@ -6,6 +6,8 @@
 //Primero se debe conectar el Arduino al Pi
 //Luego Flask web browser
 
+const bool LIDAR_ENABLED = false;
+
 RPLidar lidar;
 
 //Pins donde estan conectados los motores de las ruedas
@@ -37,11 +39,14 @@ void setup()
   //Inicializar LED
   pinMode(13, OUTPUT);
     
-  //Inicializar Lidar
-  lidar.begin(Serial1);
+  if (LIDAR_ENABLED)
+  {
+    //Inicializar Lidar
+    lidar.begin(Serial1);
 
-  //Configurar  pin mode del Lidar
-  pinMode(RPLIDAR_MOTOR, OUTPUT);
+    //Configurar  pin mode del Lidar
+    pinMode(RPLIDAR_MOTOR, OUTPUT);
+  }
 
   //Iniciar comunicacion para recibir mensajes del Raspberry PI
   Serial.begin(57600);
@@ -115,6 +120,11 @@ void loop()
 
 //Obtine informacion del LIDAR
 void leer_lidar() {
+  if (!LIDAR_ENABLED)
+  {
+    return;
+  }
+
   if (IS_OK(lidar.waitPoint())) {
     distance = lidar.getCurrentPoint().distance; //distance value in mm unit
     angle    = lidar.getCurrentPoint().angle; //anglue value in degree
@@ -139,6 +149,11 @@ void leer_lidar() {
 
 //Indica si el LIDAR detecta una distancia segura
 bool distancia_segura() {
+  if (!LIDAR_ENABLED)
+  {
+    return true;
+  }
+
   if (distance > 0 && distance < LIDAR_SAFETY)
   {
     if (
