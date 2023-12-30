@@ -67,7 +67,7 @@ def right():
 @app.route("/yes")
 def yes():
 	try:
-		ser.write("y\n".encode())
+		ser.write("Y\n".encode())
 		return menu()
 	except:
 		return error_page()
@@ -75,7 +75,7 @@ def yes():
 @app.route("/no")
 def no():
 	try:
-		ser.write("n\n".encode())
+		ser.write("N\n".encode())
 		return menu()
 	except:
 		return error_page()
