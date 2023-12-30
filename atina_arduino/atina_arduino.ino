@@ -52,9 +52,11 @@ void setup()
   //Inicializar LED
   pinMode(13, OUTPUT);
 
+  //Attach pins neck servos
   tilt_servo.attach(8);
   pan_servo.attach(9);
 
+  //Neck in center position
   tilt_servo.write(TILT_INIT);
   pan_servo.write(PAN_MIDDLE);
     
@@ -82,17 +84,23 @@ void setup()
 
 void loop()
 {
+  process_serial();
+}
+
+////////////////////////////////
+//PROCESAMIENTO SERIAL
+////////////////////////////////
+void process_serial()
+{
   //PROCESAR MENSAJES DEL PUERTO SERIAL enviados por el Raspberry PI
   if (Serial.available())
   {
-    //mensaje recibido
-
+    //Obtener mensaje
     String message = Serial.readStringUntil('\n');
-    int speed = 0;
 
-    String command = message.substring(0, 1);
-
+    //If msg has two characters, its a change speed
     int msg_len = message.length();
+    int speed = 0;
 
     if (msg_len == 2)
     {
@@ -114,6 +122,9 @@ void loop()
       //speed = speed_msg.toInt();
     }
 
+    //Check msg command
+    String command = message.substring(0, 1);
+
     if (command == "L")
     {
       turn_left(speed);
@@ -129,6 +140,14 @@ void loop()
     else if (command == "B")
     {
       back(speed);
+    }
+    else if (command == "Y")
+    {
+      say_yes();
+    }
+    else if (command == "N")
+    {
+      say_no();
     }
   }
 }
