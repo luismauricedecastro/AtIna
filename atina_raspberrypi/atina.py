@@ -6,6 +6,8 @@ from flask import Flask
 from jetson_inference import detectNet
 from jetson_utils import videoSource, videoOutput
 
+person_found = False
+
 print("Iniciando serial...")
 ser = serial.Serial('/dev/ttyACM0', 57600, timeout=1.0)
 time.sleep(3)
@@ -202,12 +204,14 @@ while display.IsStreaming():
 		print("detected {:d} objects in image".format(len(detections)))
 		
 	for detection in detections:
-		if detection.ClassID == 1:
-			print("Persona==========================")
-			print(detection)
-			ser.write("Y\n".encode())
+		if detection.ClassID == 1 & detection.Confidence > 0.8:
+			if person_found == False:
+				person_found = True
+				ser.write("Y\n".encode())
 		else:
-			print(detection)
+			person_found = False
+		
+		print(detection)
 	
 	# render the image
 	display.Render(img)
@@ -222,4 +226,20 @@ try:
 except KeyboardInterrupt:
 	print("Cerrando serial")
 	ser.close()
+'''
+
+
+'''
+Detections object
+
+Confidence
+ClassID
+Left
+Top
+Right
+Bottom
+Width
+Height
+Area
+Center
 '''
