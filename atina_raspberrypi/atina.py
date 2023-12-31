@@ -7,6 +7,7 @@ from jetson_inference import detectNet
 from jetson_utils import videoSource, videoOutput
 
 person_found = False
+person_found_start = time.time()
 
 print("Iniciando serial...")
 ser = serial.Serial('/dev/ttyACM0', 57600, timeout=1.0)
@@ -208,8 +209,11 @@ while display.IsStreaming():
 	for detection in detections:
 		if detection.ClassID == 1 and detection.Confidence > 0.8:
 			if person_found == False:
-				person_found = True
-				ser.write("Y\n".encode())
+				diff_time = (time.time() - person_found_start)
+				if diff_time > 10:
+					person_found = True
+					person_found_start = time.time()
+					ser.write("Y\n".encode())
 		
 		print(detection)
 	
