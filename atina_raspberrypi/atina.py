@@ -202,14 +202,14 @@ while display.IsStreaming():
 	# print the detections
 	if len(detections) > 0:
 		print("detected {:d} objects in image".format(len(detections)))
+	else:
+		person_found = False
 		
 	for detection in detections:
 		if detection.ClassID == 1 and detection.Confidence > 0.8:
 			if person_found == False:
 				person_found = True
 				ser.write("Y\n".encode())
-		else:
-			person_found = False
 		
 		print(detection)
 	
