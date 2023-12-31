@@ -223,14 +223,12 @@ while display.IsStreaming():
 	# update the title bar
 	display.SetStatus("Object Detection | Network {:.0f} FPS".format(net.GetNetworkFPS()))
 
-'''
 print("Iniciando web server...")
 try:
 	app.run(host = "0.0.0.0")
 except KeyboardInterrupt:
 	print("Cerrando serial")
 	ser.close()
-'''
 
 
 '''
